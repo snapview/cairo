@@ -43,6 +43,8 @@ impl Drop for RectangleVec {
 
 pub struct Context(*mut cairo_t, bool);
 
+unsafe impl Send for Context { }
+
 #[cfg(feature = "use_glib")]
 impl<'a> ToGlibPtr<'a, *mut ffi::cairo_t> for &'a Context {
     type Storage = &'a Context;
