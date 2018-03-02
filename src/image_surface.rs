@@ -59,6 +59,22 @@ impl ImageSurface {
         }
     }
 
+    pub unsafe fn create_for_raw_data(data: &[u8],
+                                      format: Format,
+                                      width: i32,
+                                      height: i32,
+                                      stride: i32)
+        -> Result<ImageSurface, Status>
+    {
+        assert!(data.len() == (height * stride) as usize);
+        let surface_ptr = ffi::cairo_image_surface_create_for_data(data.as_ptr() as *mut _,
+                                                                   format,
+                                                                   width,
+                                                                   height,
+                                                                   stride);
+        ImageSurface::from_raw_full(surface_ptr)
+    }
+
     pub fn get_data(&mut self) -> Result<ImageSurfaceData, BorrowError> {
         unsafe {
             if ffi::cairo_surface_get_reference_count(self.to_raw_none()) > 1 {
